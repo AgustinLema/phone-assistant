@@ -1,0 +1,15 @@
+version: "3"
+services:
+  node:
+    image: "node"
+    user: "node"
+    working_dir: /home/node/app
+    # environment:
+    #   - NODE_ENV=production
+    tty: true
+    volumes:
+      - ./:/home/node/app
+    ports:
+      - "8081:3000"
+    command: "npm start -- --debug --host 0.0.0.0"
+    # command: "tail -f /dev/null"
