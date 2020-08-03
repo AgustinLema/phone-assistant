@@ -85,7 +85,7 @@ export default props => {
     const [shownOptionsCount, setShownOptionsCount] = useState(10);
     const filteredDataset = filterDataset(props.dataset, props.filters, props.category);
     const optionData = getOptionData(filteredDataset, props.category);
-    console.log("Sorting by", sortAttr, props.category);
+    optionData && console.log("Sorting by", sortAttr, props.category);
     const sortedOptions = sortOptions(optionData, sortAttr, sortOrderDesc);
 
     const updateSortAttr = (attr) => {

@@ -1,16 +1,31 @@
 import React from 'react'
+import { Link } from "@reach/router";
+
+
 import { Typography } from '@material-ui/core';
 
 export default props => {
-    const results = props.filteredData && props.filteredData.map(item => `${item.Marca} ${item.Modelo}`);
-    const uniqueResults = [...new Set(results)]
+    const itemList = {}
+    props.filteredData && props.filteredData.forEach(item => {
+        const uniqueName = `${item.Marca} ${item.Modelo}`;
+        itemList[uniqueName] = item;
+    });
+
     return (
         <div>
-            <Typography variant="h4" >Modelos encontrados ({props.filteredData.length})</Typography>
-            <ul style={{overflow: "auto", maxHeight: "500px"}}>
+            <Typography variant="h4" >Modelos encontrados ({Object.keys(itemList).length})</Typography>
+            <ul style={{ overflow: "auto", maxHeight: "500px" }}>
                 {/* {props.filteredData} */}
                 {/* {uniqueResults && uniqueResults.slice(0, 10).map(item => <li key={item}>{item}</li>)} */}
-                {uniqueResults && uniqueResults.map(item => <React.Fragment key={item}> {item} <br /></React.Fragment>)}
+                {itemList && Object.keys(itemList).map(itemUniqueName => (
+                    <div key={itemUniqueName}                    >
+                        <Link
+                            to={`details/${itemList[itemUniqueName].id}`}
+                        >
+                            {itemUniqueName}
+                        </Link>
+                    </div>
+                ))}
             </ul>
         </div>
     )

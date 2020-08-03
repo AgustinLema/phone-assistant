@@ -70,6 +70,10 @@ def dataset_cleanup(dataset):
 
             cleaned_dataset.append(obj)
 
+    # Add ids
+    for id, obj in enumerate(cleaned_dataset):
+        obj["id"] = id
+
     return cleaned_dataset
 
 with open(in_filename, 'r') as csvfile:
