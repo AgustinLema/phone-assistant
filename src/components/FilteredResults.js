@@ -7,7 +7,7 @@ import { Typography } from '@material-ui/core';
 export default props => {
     const itemList = {}
     props.filteredData && props.filteredData.forEach(item => {
-        const uniqueName = `${item.Marca} ${item.Modelo}`;
+        const uniqueName = `${item.Marca} ${item.Modelo} (${item.RAM} - ${item["Almacenamiento Interno"]})`;
         itemList[uniqueName] = item;
     });
 
@@ -20,7 +20,7 @@ export default props => {
                 {itemList && Object.keys(itemList).map(itemUniqueName => (
                     <div key={itemUniqueName}                    >
                         <Link
-                            to={`details/${itemList[itemUniqueName].id}`}
+                            to={`/details/${itemList[itemUniqueName].id}`}
                         >
                             {itemUniqueName}
                         </Link>

@@ -1,7 +1,8 @@
-import React from 'react'
-import { Link } from "@reach/router";
+import React, { useState } from 'react'
+import { Link, navigate } from "@reach/router";
 
 import { AppBar, Toolbar, Typography, IconButton, InputBase, makeStyles } from '@material-ui/core'
+
 import HomeSharp from '@material-ui/icons/HomeSharp';
 import SearchIcon from '@material-ui/icons/Search';
 
@@ -16,6 +17,7 @@ const useStyles = makeStyles(theme => ({
 
 export default props => {
     const classes = useStyles();
+    const [searchValue, setSearchValue] = useState("");
 
     return (
         <AppBar position="static">
@@ -36,14 +38,16 @@ export default props => {
                     <Link to="admin">admin</Link>
                 </div>
 
-                <div>
+                <form onSubmit={event => {navigate(`/search/${searchValue}`); event.preventDefault()}}>
                     <SearchIcon />
                     <InputBase
                         placeholder="Search…"
+                        value={searchValue}
+                        onChange={event => setSearchValue(event.target.value)}
                         inputProps={{ 'aria-label': 'search' }}
                         className={classes.searchInput}
                     />
-                </div>
+                </form>
             </Toolbar>
         </AppBar>
     )

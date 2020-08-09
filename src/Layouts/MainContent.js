@@ -8,7 +8,7 @@ export default props => {
         <Router>
             <PhoneExplorer path="/" />
             <PhoneDetails path="/details/:phoneID" />
-            <PhoneSearch path="/search/" />
+            <PhoneSearch path="/search/:searchText" />
             <Admin path="/admin/" />
         </Router>
     )
