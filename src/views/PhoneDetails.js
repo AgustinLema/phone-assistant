@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { getPhoneDetails } from '../services/phoneDatasetAPI'
+import { getPhoneDetails, getPhoneDetailsByName } from '../services/phoneDatasetAPI'
 
 import { TableContainer, Paper, Table, TableBody, TableRow, TableCell } from '@material-ui/core'
 
@@ -40,28 +40,50 @@ export default props => {
         console.log("Loading from service");
         setPhoneData({ model: "sample" })
         const phoneDetails = await getPhoneDetails(phoneID);
-        setPhoneData(phoneDetails);
+        const phoneDetailsWithLinks = await getPhoneDetailsByName(phoneDetails['unique_name'])
+        setPhoneData(phoneDetailsWithLinks);
     }
 
     return (
-        <TableContainer component={Paper} className={classes.container}>
-            <Table>
-                <TableBody>
+        <React.Fragment>
+            <TableContainer component={Paper} className={classes.container}>
+                <Table>
+                    <TableBody>
 
-                    {Object.keys(phoneData).map(attr => (
-                        <TableRow key={attr}>
-                            <TableCell component="th" scope="row">
+                        {Object.keys(phoneData).filter(attr => !['offers', '_id'].includes(attr)).map(attr => (
+                            <TableRow key={attr}>
+                                <TableCell component="th" scope="row">
 
-                                <label className={classes.field}>{attr}</label>
-                            </TableCell>
-                            <TableCell align="right">
-                                <label className={classes.value}>{phoneData[attr]}</label>
+                                    <label className={classes.field}>{attr}</label>
+                                </TableCell>
+                                <TableCell align="right">
+                                    <label className={classes.value}>{phoneData[attr]}</label>
 
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer >
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer >
+            <hr />
+            <TableContainer component={Paper} className={classes.containerPrices}>
+                <Table>
+                    <TableBody>
+
+                        {'offers' in phoneData && phoneData['offers'].sort((a, b) => a['amount'] - b['amount']).map(offer => (
+                            <TableRow key={offer['link']}>
+                                {["date", "eshop", "title", "amount", "currency"].map(attr => (
+                                    <TableCell align="right" key={attr}>
+                                        {attr === "title" ?
+                                            <a href={offer["link"]}>{offer[attr]}</a> :
+                                            <label className={classes.value}>{offer[attr]}</label>}
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer >
+        </React.Fragment>
     )
 }

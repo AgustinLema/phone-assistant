@@ -4,8 +4,10 @@ services:
     image: "node"
     user: "node"
     working_dir: /home/node/app
-    # environment:
-    #   - NODE_ENV=production
+    environment:
+      # - NODE_ENV=production
+      - BACKEND_HOST=localhost
+      - BACKEND_PORT=8000
     tty: true
     volumes:
       - ./:/home/node/app

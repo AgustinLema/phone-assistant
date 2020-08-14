@@ -9,3 +9,11 @@ export const getFilterablePhoneInfo = async () => {
 export const getPhoneDetails = async id => {
     return dataset[id];
 }
+
+export const getPhoneDetailsByName = async name => {
+    const response = await fetch(`http://localhost:5000/phone-data/${name}`);
+    console.log("Response", response)
+    const jsonResponse = await response.json();
+    console.log(jsonResponse)
+    return jsonResponse;
+}
