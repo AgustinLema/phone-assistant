@@ -4,16 +4,19 @@ import { getFilterablePhoneInfo } from '../services/phoneDatasetAPI'
 
 import { Paper } from '@material-ui/core'
 
-import FilteredResults from '../components/FilteredResults'
+import FilteredResults from '../components/filters/FilteredResults'
 
 
 export default props => {
     const [dataset, setDataset] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const loadFilterableData = async () => {
+        setLoading(true);
         const dataset = await getFilterablePhoneInfo();
         setDataset(dataset);
+        setLoading(false);
     }
 
     useEffect(() => {
@@ -35,11 +38,9 @@ export default props => {
     }, [dataset, props.searchText]);
 
     return (
-        <React.Fragment>
-            <h2>Phones matching "{props.searchText}"</h2>
-            <Paper>
-                <FilteredResults filteredData={filteredData} />
-            </Paper>
-        </React.Fragment>
+        <Paper style={{margin: "10px", minHeight: "50vh", padding: 10}}>
+            <h2>Buscando teléfonos por: "{props.searchText}"</h2>
+            <FilteredResults loading={loading} filteredData={filteredData} visibleCount={20}/>
+        </Paper>
     )
 }

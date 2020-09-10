@@ -2,26 +2,30 @@ import React, { useState } from 'react'
 import { Grid, Button, IconButton } from '@material-ui/core'
 import FilterOption from './FilterOption'
 import Clear from '@material-ui/icons/Clear';
+import FilterOptionCompact from './FilterOptionCompact';
+import { filterObjects } from '../../utils/filtersUtils';
 
 Math.median = (values) => {
-    if(values.length === 0) return 0;
+    if (values.length === 0) return 0;
 
-    values.sort(function(a,b){
-      return a-b;
+    values.sort(function (a, b) {
+        return a - b;
     });
-  
+
     var half = Math.floor(values.length / 2);
-  
+
     if (values.length % 2)
-      return values[half];
-  
+        return values[half];
+
     return (values[half - 1] + values[half]) / 2.0;
 }
 
 const getOptionData = (data, field) => {
     let optionData = {}
+    console.log("Option data for ", field)
     data.forEach(obj => {
         const optionValue = obj[field];
+        console.log("Option value: ", optionValue)
         if (!(optionValue in optionData)) {
             optionData[optionValue] = {
                 label: optionValue,
@@ -33,9 +37,11 @@ const getOptionData = (data, field) => {
             };
         }
         optionData[optionValue].count++;
-        const extractedPrice = obj["Precio"].match(/About (\d+) EUR/i);
+        // const extractedPrice = obj["Precio"].match(/About (\d+) EUR/i);   # TODO: Deprecate, we use price from ml now?
+        const extractedPrice = obj["prices"]["mean"]
         if (extractedPrice) {
-            const price = extractedPrice[1]
+            // const price = extractedPrice[1]
+            const price = extractedPrice
             const intPrice = parseInt(price);
             optionData[optionValue].minPrice = Math.min(optionData[optionValue].minPrice, intPrice);
             optionData[optionValue].maxPrice = Math.max(optionData[optionValue].maxPrice, intPrice);
@@ -57,11 +63,9 @@ const getOptionData = (data, field) => {
 }
 
 const filterDataset = (dataset, filters, currentCategory) => {
-    const filteredData = dataset.filter(item =>
-        !filters || Object.keys(filters).filter(k => filters[k] !== null && k !== currentCategory)
-            .every(filterCategory => item[filterCategory] === filters[filterCategory])
-    );
-    return filteredData;
+    let otherFilters = { ...filters };
+    delete otherFilters[currentCategory]
+    return filterObjects(dataset, otherFilters);
 }
 
 const sortOptions = (optionData, attr, desc = true) => {
@@ -101,8 +105,7 @@ export default props => {
 
     return (
         <div>
-            <div style={{padding: 10}}>
-                <h2>{props.category}</h2>
+            {/* <div style={{padding: 10}}>
                 <span style={{fontWeight: "bold", marginRight: 10}}>Sort by</span>
                 {["count", "minPrice", "maxPrice", "medianPrice", "label"].map(attr => (
                     <Button
@@ -122,17 +125,18 @@ export default props => {
                     color="secondary"
                     aria-label="Clear filter"
                     disabled = {props.filters[props.category] ? false : true}
-                    onClick={() => {props.setFilter(null)}}
+                    onClick={() => {props.onChange(null)}}
                 >
                     <Clear />
                 </IconButton>
-            </div>
-            <Grid container justify="space-around" style={{ width: "100%", overflow: "auto", maxHeight: "500px" }}>
+            </div> */}
+            <h5 style={{ margin: "5px 0" }}>Opciones:</h5>
+            <Grid container spacing={1} style={{ width: "100%", overflow: "auto", maxHeight: "500px" }}>
                 {sortedOptions && sortedOptions.slice(0, shownOptionsCount).map(option =>
-                    optionData[option] && <Grid item key={option}>
-                        <FilterOption
+                    optionData[option] && optionData[option].label && <Grid item key={option}>
+                        <FilterOptionCompact
                             info={optionData[option]}
-                            handleClick={() => props.setFilter(option)}
+                            handleClick={() => props.onChange(option)}
                             name={option}
                             selected={props.filters[props.category] === option}
                         />
@@ -146,7 +150,7 @@ export default props => {
                     margin: "10px auto",
                     display: sortedOptions && shownOptionsCount < sortedOptions.length ? "block" : "none"
                 }}
-                onClick={() => setShownOptionsCount(count => count+10)}
+                onClick={() => setShownOptionsCount(count => count + 10)}
             >
                 Mostrar más
             </Button>

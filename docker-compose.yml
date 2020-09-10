@@ -10,8 +10,8 @@ services:
       - BACKEND_PORT=8000
     tty: true
     volumes:
-      - ./:/home/node/app
+      - ./:/home/node/app:z
     ports:
       - "8081:3000"
-    command: "npm start -- --debug --host 0.0.0.0"
+    command: "./entrypoint.sh"
     # command: "tail -f /dev/null"

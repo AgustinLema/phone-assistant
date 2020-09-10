@@ -4,10 +4,11 @@ import { Grid, Paper } from '@material-ui/core'
 // import TestComponent from '../components/TestComponent'
 import FiltersContainer from '../components/FiltersContainer'
 
+
 export default props => {
     const style = {
         Paper: {
-            padding: 20,
+            paddingRight: 10,
             marginTop: 10,
             marginBotton: 10,
         }
